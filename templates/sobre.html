@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sobre — ERP{% endblock %}
+{% block topbar_title %}Sobre{% endblock %}
+{% block nav_sobre %}active{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Sobre o Sistema</h1>
+</div>
+
+<!-- DESCRIÇÃO DO PROJETO -->
+<div class="card-dark mb-4">
+    <div class="card-header">
+        <i class="ti ti-info-circle me-2" style="color:var(--green-primary)"></i> Descrição do Projeto
+    </div>
+    <div class="card-body">
+        <p style="color:var(--text-secondary); font-size:14px; line-height:1.8; margin-bottom:1rem;">
+            O <strong style="color:var(--text-primary);">Mini ERP</strong> é um sistema de gestão empresarial desenvolvido
+            em <strong style="color:var(--green-primary);">Python</strong> com o framework
+            <strong style="color:var(--green-primary);">Django</strong>, conectado a um banco de dados
+            <strong style="color:var(--green-primary);">PostgreSQL</strong>. Seu objetivo é centralizar e simplificar
+            os principais processos operacionais de pequenas e médias empresas.
+        </p>
+        <p style="color:var(--text-secondary); font-size:14px; line-height:1.8; margin-bottom:1.5rem;">
+            O sistema permite o controle completo do ciclo de vendas — desde o cadastro de clientes e produtos
+            até o registro de pagamentos e movimentações de estoque — garantindo rastreabilidade e organização
+            das informações em um único ambiente integrado.
+        </p>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div style="background:var(--bg-surface); border:0.5px solid var(--border); border-radius:8px; padding:1rem;">
+                    <div style="color:var(--green-primary); font-size:13px; font-weight:500; margin-bottom:0.5rem;">
+                        <i class="ti ti-shopping-cart me-1"></i> Vendas
+                    </div>
+                    <p style="color:var(--text-secondary); font-size:12px; line-height:1.6; margin:0;">
+                        Realização de vendas com adição de itens, cálculo automático de totais, finalização e cancelamento de pedidos.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div style="background:var(--bg-surface); border:0.5px solid var(--border); border-radius:8px; padding:1rem;">
+                    <div style="color:var(--green-primary); font-size:13px; font-weight:500; margin-bottom:0.5rem;">
+                        <i class="ti ti-box me-1"></i> Estoque
+                    </div>
+                    <p style="color:var(--text-secondary); font-size:12px; line-height:1.6; margin:0;">
+                        Controle de entrada e saída de produtos com registro de movimentações e consulta de estoque atualizado.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div style="background:var(--bg-surface); border:0.5px solid var(--border); border-radius:8px; padding:1rem;">
+                    <div style="color:var(--green-primary); font-size:13px; font-weight:500; margin-bottom:0.5rem;">
+                        <i class="ti ti-users me-1"></i> Clientes & Pagamentos
+                    </div>
+                    <p style="color:var(--text-secondary); font-size:12px; line-height:1.6; margin:0;">
+                        Cadastro e gestão de clientes com suporte a múltiplas formas de pagamento: dinheiro, cartão, PIX e boleto.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TECNOLOGIAS -->
+<div class="card-dark mb-4">
+    <div class="card-header">
+        <i class="ti ti-code me-2" style="color:var(--green-primary)"></i> Tecnologias Utilizadas
+    </div>
+    <div class="card-body">
+        <div class="d-flex flex-wrap gap-2">
+            {% for tech in tecnologias %}
+            <span style="background:var(--green-dim); border:0.5px solid var(--green-border); color:var(--green-primary); font-size:12px; padding:4px 12px; border-radius:99px;">
+                {{ tech }}
+            </span>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- DIAGRAMA DE CASO DE USO -->
+<div class="card-dark mb-4">
+    <div class="card-header">
+        <i class="ti ti-sitemap me-2" style="color:var(--green-primary)"></i> Diagrama de Caso de Uso
+    </div>
+    <div class="card-body text-center">
+        <p style="color:var(--text-secondary); font-size:12px; margin-bottom:1rem;">
+            Representa os atores e funcionalidades do sistema Mini ERP e suas interações.
+        </p>
+        <img src="{% static 'img/diagrama_caso_uso.png' %}"
+             alt="Diagrama de Caso de Uso"
+             style="max-width:100%; border-radius:8px; border:0.5px solid var(--border); background:#fff; padding:1rem;">
+    </div>
+</div>
+
+<!-- DIAGRAMA DE CLASSES -->
+<div class="card-dark mb-4">
+    <div class="card-header">
+        <i class="ti ti-layout-grid me-2" style="color:var(--green-primary)"></i> Diagrama de Classes
+    </div>
+    <div class="card-body text-center">
+        <p style="color:var(--text-secondary); font-size:12px; margin-bottom:1rem;">
+            Representa a estrutura de classes, atributos, métodos e relacionamentos do sistema.
+        </p>
+        <img src="{% static 'img/diagrama_classes.png' %}"
+             alt="Diagrama de Classes"
+             style="max-width:100%; border-radius:8px; border:0.5px solid var(--border); background:#fff; padding:1rem;">
+    </div>
+</div>
+
+{% endblock %}
