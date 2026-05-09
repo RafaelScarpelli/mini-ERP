@@ -1,3 +1,4 @@
+{% load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -40,7 +41,6 @@
             border: 0.5px solid var(--border);
         }
 
-        /* Painel esquerdo */
         .login-brand {
             width: 340px;
             background: #0d0d0d;
@@ -54,52 +54,31 @@
         }
 
         .brand-icon {
-            width: 48px;
-            height: 48px;
+            width: 48px; height: 48px;
             background: var(--green-dim);
             border: 0.5px solid var(--green-border);
             border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             margin-bottom: 1.5rem;
         }
 
         .brand-icon i { color: var(--green-primary); font-size: 24px; }
-
-        .brand-title {
-            color: var(--text-primary);
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .brand-sub {
-            color: var(--text-secondary);
-            font-size: 13px;
-            line-height: 1.6;
-        }
+        .brand-title { color: var(--text-primary); font-size: 22px; font-weight: 600; margin-bottom: 0.5rem; }
+        .brand-sub { color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
 
         .brand-divider {
-            width: 32px;
-            height: 2px;
+            width: 32px; height: 2px;
             background: var(--green-primary);
             border-radius: 99px;
             margin: 1.5rem 0;
         }
 
         .brand-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-secondary);
-            font-size: 12px;
-            margin-bottom: 8px;
+            display: flex; align-items: center; gap: 8px;
+            color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;
         }
-
         .brand-info i { color: var(--green-primary); font-size: 14px; }
 
-        /* Painel direito — formulário */
         .login-form {
             flex: 1;
             background: var(--bg-card);
@@ -109,79 +88,43 @@
             padding: 2.5rem;
         }
 
-        .form-title {
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--text-primary);
-            margin-bottom: 0.25rem;
-        }
+        .form-title { font-size: 16px; font-weight: 500; color: var(--text-primary); margin-bottom: 0.25rem; }
+        .form-subtitle { font-size: 12px; color: var(--text-secondary); margin-bottom: 2rem; }
 
-        .form-subtitle {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-        }
-
-        .form-label {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 0.3rem;
-            display: block;
-        }
+        .form-label { font-size: 12px; color: var(--text-secondary) !important; margin-bottom: 0.3rem; }
 
         .form-control {
-            background: var(--bg-base);
-            border: 0.5px solid var(--border);
-            color: var(--text-primary);
+            background: var(--bg-base) !important;
+            border: 0.5px solid var(--border) !important;
+            color: var(--text-primary) !important;
             font-size: 13px;
             border-radius: 6px;
-            padding: 0.6rem 0.85rem;
-            width: 100%;
-            outline: none;
-            transition: border-color 0.15s, box-shadow 0.15s;
         }
 
         .form-control:focus {
-            border-color: var(--green-primary);
-            box-shadow: 0 0 0 3px var(--green-dim);
+            border-color: var(--green-primary) !important;
+            box-shadow: 0 0 0 3px var(--green-dim) !important;
         }
 
         .form-control::placeholder { color: var(--text-secondary); opacity: 0.5; }
 
-        .input-wrap {
-            position: relative;
-            margin-bottom: 1rem;
-        }
-
-        .input-icon {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            font-size: 15px;
-            pointer-events: none;
-        }
-
-        .input-wrap .form-control { padding-right: 2rem; }
-
-        .btn-login {
+        .btn.btn-primary {
             width: 100%;
-            background: var(--green-primary);
-            color: #000;
+            background: var(--green-primary) !important;
+            color: #000 !important;
             font-size: 13px;
             font-weight: 600;
-            border: none;
+            border: none !important;
             border-radius: 6px;
             padding: 0.65rem;
-            cursor: pointer;
             margin-top: 0.5rem;
             transition: background 0.15s;
         }
 
-        .btn-login:hover { background: var(--green-dark); color: #fff; }
+        .btn.btn-primary:hover { background: var(--green-dark) !important; color: #fff !important; }
 
-        .erro-msg {
+        .errorlist {
+            list-style: none;
             background: #ef444415;
             border: 0.5px solid #ef444430;
             color: #ef4444;
@@ -189,16 +132,12 @@
             font-size: 12px;
             padding: 0.6rem 0.85rem;
             margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
     </style>
 </head>
 <body>
     <div class="login-wrap">
 
-        <!-- Marca -->
         <div class="login-brand">
             <div class="brand-icon">
                 <i class="ti ti-plant-2"></i>
@@ -211,33 +150,13 @@
             <div class="brand-info"><i class="ti ti-check"></i> Relatórios em tempo real</div>
         </div>
 
-        <!-- Formulário -->
         <div class="login-form">
             <div class="form-title">Bem-vindo de volta</div>
             <div class="form-subtitle">Faça login para continuar</div>
 
-            {% if erro %}
-                <div class="erro-msg">
-                    <i class="ti ti-alert-circle"></i> {{ erro }}
-                </div>
-            {% endif %}
-
             <form method="post">
                 {% csrf_token %}
-
-                <label class="form-label">Usuário</label>
-                <div class="input-wrap">
-                    <input type="text" name="username" class="form-control" placeholder="seu usuário" autofocus required>
-                    <i class="ti ti-user input-icon"></i>
-                </div>
-
-                <label class="form-label">Senha</label>
-                <div class="input-wrap">
-                    <input type="password" name="password" class="form-control" placeholder="••••••••" required>
-                    <i class="ti ti-lock input-icon"></i>
-                </div>
-
-                <button type="submit" class="btn-login">Entrar</button>
+                {% crispy form %}
             </form>
         </div>
 

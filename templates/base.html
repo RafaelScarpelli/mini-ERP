@@ -118,17 +118,9 @@
             z-index: 99;
         }
 
-        .topbar-title {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
+        .topbar-title { font-size: 14px; font-weight: 500; color: var(--text-primary); }
 
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
 
         .topbar-user {
             display: flex;
@@ -152,15 +144,8 @@
         }
 
         /* ===== MAIN CONTENT ===== */
-        .main-content {
-            margin-left: 220px;
-            padding-top: 52px;
-            min-height: 100vh;
-        }
-
-        .page-wrapper {
-            padding: 1.75rem 2rem;
-        }
+        .main-content { margin-left: 220px; padding-top: 52px; min-height: 100vh; }
+        .page-wrapper { padding: 1.75rem 2rem; }
 
         .page-header {
             display: flex;
@@ -169,12 +154,7 @@
             margin-bottom: 1.5rem;
         }
 
-        .page-header h1 {
-            font-size: 18px;
-            font-weight: 500;
-            color: var(--text-primary);
-            margin: 0;
-        }
+        .page-header h1 { font-size: 18px; font-weight: 500; color: var(--text-primary); margin: 0; }
 
         /* ===== CARDS ===== */
         .card-dark {
@@ -203,6 +183,9 @@
             font-weight: 500;
             padding: 0.45rem 1rem;
             border-radius: 6px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
         }
 
         .btn-green:hover { background: var(--green-dark); color: #fff; }
@@ -214,15 +197,15 @@
             font-size: 13px;
             padding: 0.45rem 1rem;
             border-radius: 6px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
         }
 
         .btn-outline-green:hover { background: var(--green-dim); color: var(--green-primary); }
 
         /* ===== TABLE ===== */
-        .table-dark-custom {
-            color: var(--text-primary);
-            font-size: 13px;
-        }
+        .table-dark-custom { color: var(--text-primary); font-size: 13px; }
 
         .table-dark-custom thead th {
             background: var(--bg-base);
@@ -250,27 +233,62 @@
         .badge-yellow { background: #eab30818; color: #eab308; font-weight: 400; font-size: 11px; padding: 3px 8px; border-radius: 99px; }
         .badge-red { background: #ef444418; color: #ef4444; font-weight: 400; font-size: 11px; padding: 3px 8px; border-radius: 99px; }
 
-        /* ===== FORMS ===== */
-        .form-control, .form-select {
-            background: var(--bg-base);
-            border: 0.5px solid var(--border);
-            color: var(--text-primary);
+        /* ===== FORMS (Bootstrap + Crispy dark override) ===== */
+        .form-control,
+        .form-select {
+            background: var(--bg-base) !important;
+            border: 0.5px solid var(--border) !important;
+            color: var(--text-primary) !important;
             font-size: 13px;
             border-radius: 6px;
         }
 
-        .form-control:focus, .form-select:focus {
-            background: var(--bg-base);
-            border-color: var(--green-primary);
-            color: var(--text-primary);
-            box-shadow: 0 0 0 3px var(--green-dim);
+        .form-control:focus,
+        .form-select:focus {
+            background: var(--bg-base) !important;
+            border-color: var(--green-primary) !important;
+            color: var(--text-primary) !important;
+            box-shadow: 0 0 0 3px var(--green-dim) !important;
         }
+
+        /* Dropdown select options */
+        .form-select option { background: var(--bg-base); color: var(--text-primary); }
 
         .form-label {
             font-size: 12px;
-            color: var(--text-secondary);
+            color: var(--text-secondary) !important;
             margin-bottom: 0.3rem;
         }
+
+        /* Crispy submit button usa classe btn btn-primary por default — sobrescrever */
+        .btn.btn-primary {
+            background: var(--green-primary) !important;
+            color: #000 !important;
+            border: none !important;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 0.45rem 1rem;
+            border-radius: 6px;
+        }
+
+        .btn.btn-primary:hover { background: var(--green-dark) !important; color: #fff !important; }
+
+        /* btn-green via crispy Submit css_class */
+        .btn.btn-green {
+            background: var(--green-primary);
+            color: #000;
+            border: none;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 0.45rem 1rem;
+            border-radius: 6px;
+        }
+
+        .btn.btn-green:hover { background: var(--green-dark); color: #fff; }
+
+        /* Mensagens de validação */
+        .invalid-feedback { font-size: 11px; }
+        .is-invalid { border-color: #ef4444 !important; }
 
         /* ===== ALERTS ===== */
         .alert-green {

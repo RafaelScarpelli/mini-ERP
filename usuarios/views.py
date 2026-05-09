@@ -1,33 +1,19 @@
-from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView, LogoutView
+from django.views.generic import TemplateView
+from django.urls import reverse_lazy
 
 
-def login_view(request):
-    if request.user.is_authenticated:
-        return redirect('dashboard')
+class CustomLoginView(LoginView):
+    template_name = 'usuarios/login.html'
 
-    erro = None
-
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None:
-            login(request, user)
-            return redirect('dashboard')
-        else:
-            erro = 'Usuário ou senha inválidos.'
-
-    return render(request, 'usuarios/login.html', {'erro': erro})
+    def get_success_url(self):
+        return reverse_lazy('dashboard')
 
 
-def logout_view(request):
-    logout(request)
-    return redirect('login')
+class CustomLogoutView(LogoutView):
+    next_page = reverse_lazy('login')
 
 
-@login_required
-def dashboard_view(request):
-    return render(request, 'dashboard.html')
+class DashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'dashboard.html'
