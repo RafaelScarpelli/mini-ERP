@@ -23,6 +23,7 @@
                     <th>Data</th>
                     <th>Total</th>
                     <th>Status</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -41,6 +42,11 @@
                         {% else %}
                             <span class="badge-yellow">Orçamento</span>
                         {% endif %}
+                    </td>
+                    <td style="text-align:right;">
+                        <a href="{% url 'vendas:venda-detail' venda.pk %}" class="btn-outline-green">
+                            <i class="ti ti-eye"></i>
+                        </a>
                     </td>
                 </tr>
                 {% empty %}

@@ -13,12 +13,258 @@
     </a>
 </div>
 
-<div class="card-dark" style="max-width: 720px;">
-    <div class="card-body">
-        <form method="post">
-            {% csrf_token %}
-            {% crispy form %}
-        </form>
-    </div>
+{% if form.non_field_errors %}
+<div class="alert-green mb-3" style="background:#ef444415; border-color:#ef444430; color:#ef4444;">
+    <i class="ti ti-alert-circle me-2"></i>
+    {% for error in form.non_field_errors %}{{ error }}{% endfor %}
 </div>
+{% endif %}
+
+<form method="post" id="venda-form">
+    {% csrf_token %}
+
+    <div class="row g-3">
+
+        <!-- Coluna esquerda: dados da venda -->
+        <div class="col-lg-4">
+            <div class="card-dark mb-3">
+                <div class="card-header"><i class="ti ti-file-description me-2" style="color:var(--green-primary)"></i>Dados da Venda</div>
+                <div class="card-body">
+                    {% crispy form %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Coluna direita: itens -->
+        <div class="col-lg-8">
+
+            <!-- Adicionar produto -->
+            <div class="card-dark mb-3">
+                <div class="card-header"><i class="ti ti-plus me-2" style="color:var(--green-primary)"></i>Adicionar Produto</div>
+                <div class="card-body">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-6">
+                            <label class="form-label">Produto</label>
+                            <select id="select-produto" class="form-select">
+                                <option value="">— Selecione —</option>
+                                {% for p in produtos %}
+                                <option value="{{ p.pk }}"
+                                        data-preco="{{ p.preco_venda }}"
+                                        data-estoque="{{ p.estoque_atual }}"
+                                        data-nome="{{ p.nome }}">
+                                    {{ p.nome }}
+                                    {% if p.categoria %}({{ p.categoria }}){% endif %}
+                                    — R$ {{ p.preco_venda }} — estoque: {{ p.estoque_atual }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Qtd</label>
+                            <input type="number" id="input-qty" class="form-control" value="1" min="1">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Subtotal</label>
+                            <div id="preview-subtotal" style="color:var(--green-primary); font-size:15px; font-weight:500; padding:0.45rem 0;">
+                                R$ 0,00
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" id="btn-add" class="btn-green w-100" style="padding:0.45rem 0; justify-content:center;">
+                                <i class="ti ti-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="add-error" style="color:#ef4444; font-size:12px; margin-top:6px; display:none;"></div>
+                </div>
+            </div>
+
+            <!-- Tabela de itens adicionados -->
+            <div class="card-dark">
+                <div class="card-header"><i class="ti ti-list me-2" style="color:var(--green-primary)"></i>Itens da Venda</div>
+                <div class="card-body p-0">
+                    <table class="table table-dark-custom mb-0 w-100" id="tabela-itens">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Preço Unit.</th>
+                                <th>Qtd</th>
+                                <th>Subtotal</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-itens">
+                            <tr id="row-vazio">
+                                <td colspan="5" style="text-align:center; color:var(--text-muted); padding:2rem;">
+                                    Nenhum produto adicionado ainda.
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" style="text-align:right; color:var(--text-secondary); font-size:12px; padding:0.75rem 1rem;">
+                                    TOTAL
+                                </td>
+                                <td colspan="2" style="padding:0.75rem 1rem;">
+                                    <span id="total-geral" style="color:var(--green-primary); font-size:16px; font-weight:600;">R$ 0,00</span>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <!-- Inputs hidden que serão enviados no POST -->
+                    <div id="hidden-inputs"></div>
+                </div>
+
+                <div class="card-body" style="border-top:0.5px solid var(--border); padding-top:1rem;">
+                    <button type="submit" class="btn-green">
+                        <i class="ti ti-check me-1"></i> Registrar Venda
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    // Estado: lista de itens adicionados
+    // { id, nome, preco, qty, subtotal }
+    const itens = [];
+
+    const selectProduto = document.getElementById('select-produto');
+    const inputQty      = document.getElementById('input-qty');
+    const previewSub    = document.getElementById('preview-subtotal');
+    const btnAdd        = document.getElementById('btn-add');
+    const tbodyItens    = document.getElementById('tbody-itens');
+    const rowVazio      = document.getElementById('row-vazio');
+    const totalGeral    = document.getElementById('total-geral');
+    const hiddenInputs  = document.getElementById('hidden-inputs');
+    const addError      = document.getElementById('add-error');
+
+    function formatBRL(value) {
+        return 'R$ ' + parseFloat(value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function atualizarPreview() {
+        const opt = selectProduto.options[selectProduto.selectedIndex];
+        const preco = opt && opt.value ? parseFloat(opt.dataset.preco) : 0;
+        const qty = parseInt(inputQty.value) || 0;
+        previewSub.textContent = formatBRL(preco * qty);
+    }
+
+    function atualizarTotal() {
+        const total = itens.reduce((acc, i) => acc + i.subtotal, 0);
+        totalGeral.textContent = formatBRL(total);
+    }
+
+    function renderTabela() {
+        // Limpar linhas de itens (manter row-vazio)
+        Array.from(tbodyItens.querySelectorAll('tr.item-row')).forEach(r => r.remove());
+        hiddenInputs.innerHTML = '';
+
+        if (itens.length === 0) {
+            rowVazio.style.display = '';
+        } else {
+            rowVazio.style.display = 'none';
+            itens.forEach((item, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = 'item-row';
+                tr.innerHTML = `
+                    <td style="color:var(--text-primary)">${item.nome}</td>
+                    <td>${formatBRL(item.preco)}</td>
+                    <td>${item.qty}</td>
+                    <td style="color:var(--green-primary); font-weight:500">${formatBRL(item.subtotal)}</td>
+                    <td style="text-align:right">
+                        <button type="button" class="btn btn-sm btn-remover"
+                                data-idx="${idx}"
+                                style="background:#ef444415; color:#ef4444; border:0.5px solid #ef444430; border-radius:6px; padding:0.25rem 0.6rem; font-size:12px;">
+                            <i class="ti ti-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbodyItens.appendChild(tr);
+
+                // Inputs ocultos para POST
+                hiddenInputs.insertAdjacentHTML('beforeend', `
+                    <input type="hidden" name="produto_id" value="${item.id}">
+                    <input type="hidden" name="quantidade" value="${item.qty}">
+                `);
+            });
+        }
+
+        atualizarTotal();
+    }
+
+    function mostrarErro(msg) {
+        addError.textContent = msg;
+        addError.style.display = 'block';
+        setTimeout(() => { addError.style.display = 'none'; }, 4000);
+    }
+
+    selectProduto.addEventListener('change', atualizarPreview);
+    inputQty.addEventListener('input', atualizarPreview);
+
+    btnAdd.addEventListener('click', function () {
+        const opt = selectProduto.options[selectProduto.selectedIndex];
+        if (!opt || !opt.value) {
+            mostrarErro('Selecione um produto.');
+            return;
+        }
+
+        const id       = parseInt(opt.value);
+        const nome     = opt.dataset.nome;
+        const preco    = parseFloat(opt.dataset.preco);
+        const estoque  = parseInt(opt.dataset.estoque);
+        const qty      = parseInt(inputQty.value);
+
+        if (!qty || qty <= 0) {
+            mostrarErro('Informe uma quantidade válida.');
+            return;
+        }
+
+        // Verificar se produto já está na lista
+        const existente = itens.find(i => i.id === id);
+        const qtyTotal  = (existente ? existente.qty : 0) + qty;
+
+        if (qtyTotal > estoque) {
+            mostrarErro(`Estoque insuficiente para "${nome}". Disponível: ${estoque}`);
+            return;
+        }
+
+        if (existente) {
+            existente.qty      = qtyTotal;
+            existente.subtotal = existente.preco * qtyTotal;
+        } else {
+            itens.push({ id, nome, preco, qty, subtotal: preco * qty });
+        }
+
+        renderTabela();
+
+        // Reset seleção
+        selectProduto.value = '';
+        inputQty.value = 1;
+        previewSub.textContent = 'R$ 0,00';
+    });
+
+    tbodyItens.addEventListener('click', function (e) {
+        const btn = e.target.closest('.btn-remover');
+        if (!btn) return;
+        const idx = parseInt(btn.dataset.idx);
+        itens.splice(idx, 1);
+        renderTabela();
+    });
+
+    // Validação antes de submeter
+    document.getElementById('venda-form').addEventListener('submit', function (e) {
+        if (itens.length === 0) {
+            e.preventDefault();
+            mostrarErro('Adicione pelo menos um produto antes de registrar a venda.');
+        }
+    });
+})();
+</script>
 {% endblock %}

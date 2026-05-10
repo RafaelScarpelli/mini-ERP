@@ -70,3 +70,16 @@ class VendaForm(forms.ModelForm):
             ),
             Submit('submit', 'Salvar', css_class='btn-green mt-2'),
         )
+
+class CategoriaForm(forms.ModelForm):
+    class Meta:
+        model = Categoria
+        fields = ['nome']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Field('nome'),
+            Submit('submit', 'Salvar', css_class='btn-green mt-2'),
+        )

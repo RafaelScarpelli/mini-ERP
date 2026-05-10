@@ -316,6 +316,9 @@
 
     <div class="sidebar-section">Menu</div>
 
+    <a href="{% url 'sobre' %}" class="nav-item {% block nav_sobre %}{% endblock %}">
+        <i class="ti ti-info-circle"></i> Sobre
+    </a>
     <a href="{% url 'dashboard' %}" class="nav-item {% block nav_dashboard %}{% endblock %}">
         <i class="ti ti-layout-dashboard"></i> Dashboard
     </a>
@@ -328,8 +331,8 @@
     <a href="{% url 'vendas:cliente-list' %}" class="nav-item {% block nav_clientes %}{% endblock %}">
         <i class="ti ti-users"></i> Clientes
     </a>
-    <a href="{% url 'sobre' %}" class="nav-item {% block nav_sobre %}{% endblock %}">
-        <i class="ti ti-info-circle"></i> Sobre
+    <a href="{% url 'vendas:categoria-list' %}" class="nav-item {% block nav_categorias %}{% endblock %}">
+        <i class="ti ti-tag"></i> Categorias
     </a>
 
     <div class="sidebar-footer">

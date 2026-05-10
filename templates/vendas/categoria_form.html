@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ titulo }} — ERP{% endblock %}
+{% block topbar_title %}{{ titulo }}{% endblock %}
+{% block nav_categorias %}active{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{{ titulo }}</h1>
+    <a href="{% url 'vendas:categoria-list' %}" class="btn-outline-green">
+        <i class="ti ti-arrow-left me-1"></i> Voltar
+    </a>
+</div>
+
+<div class="card-dark" style="max-width: 480px;">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {% crispy form %}
+        </form>
+    </div>
+</div>
+{% endblock %}
